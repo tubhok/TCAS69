@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ระบบจัดการ PR - Admin</title>
+    <link href="https://fonts.googleapis.com/css2?family=Anuphan:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style> body { font-family: 'Anuphan', sans-serif; background-color: #f3f4f6; } </style>
+</head>
+<body class="p-4 md:p-8">
+
+    <div class="max-w-7xl mx-auto bg-white rounded-3xl shadow-xl p-6 md:p-8">
+        <h1 class="text-2xl font-bold mb-6 text-purple-800">จัดการข้อมูลรายงานตัว (Admin)</h1>
+        
+        <div id="admin-msg" class="hidden mb-4 p-3 rounded-lg text-sm font-bold text-center"></div>
+
+        <div class="overflow-x-auto border border-gray-200 rounded-xl">
+            <table class="min-w-full divide-y divide-gray-200 text-sm">
+                <thead class="bg-gray-50">
+                    <tr>
+                        <th class="px-4 py-3 text-left font-medium text-gray-500">รหัส</th>
+                        <th class="px-4 py-3 text-left font-medium text-gray-500">ชื่อ-สกุล</th>
+                        <th class="px-4 py-3 text-left font-medium text-gray-500">ระบบ</th>
+                        <th class="px-4 py-3 text-left font-medium text-gray-500">มหาวิทยาลัย / คณะ</th>
+                        <th class="px-4 py-3 text-left font-medium text-gray-500">รูปภาพ</th>
+                        <th class="px-4 py-3 text-left font-medium text-gray-500">สถานะ PR</th>
+                    </tr>
+                </thead>
+                <tbody id="tableBody" class="bg-white divide-y divide-gray-100">
+                    <tr><td colspan="6" class="text-center py-6 text-gray-500">กำลังโหลดข้อมูล...</td></tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <script>
+        const API_URL = 'https://script.google.com/macros/s/AKfycbyGdRDsQvafi7ERjekEO87jeb1sYTMBsbmmtlGvnd_OFvkAvlyhSs2RGHxqK2suKZzB/exec'; // <-- นำ Web App URL มาใส่ตรงนี้
+
+        window.onload = loadData;
+
+        function loadData() {
+            fetch(`${API_URL}?action=getAdminData`)
+                .then(res => res.json())
+                .then(data => renderTable(data));
+        }
+
+        function renderTable(data) {
+            const tbody = document.getElementById('tableBody');
+            tbody.innerHTML = '';
+            
+            if(data.length === 0) {
+                tbody.innerHTML = '<tr><td colspan="6" class="text-center py-4 font-bold text-gray-500">ยังไม่มีข้อมูล</td></tr>';
+                return;
+            }
+
+            data.forEach((row, index) => {
+                const status = row[12];
+                const bgStatus = status === 'รอจัดทำ' ? 'bg-red-50 text-red-700 border-red-200' : 
+                                 status === 'กำลังจัดทำ' ? 'bg-yellow-50 text-yellow-700 border-yellow-200' : 'bg-green-50 text-green-700 border-green-200';
+
+                tbody.innerHTML += `
+                    <tr class="hover:bg-gray-50 transition-colors">
+                        <td class="px-4 py-3">${row[1]}</td>
+                        <td class="px-4 py-3 font-bold text-gray-700">${row[3]} <br><span class="text-xs font-normal text-gray-500">${row[4]}</span></td>
+                        <td class="px-4 py-3 text-xs"><span class="bg-gray-200 px-2 py-1 rounded">${row[5]}</span><br><span class="text-gray-500 mt-1 block">${row[9]}</span></td>
+                        <td class="px-4 py-3 font-medium">${row[6]}<br><span class="text-xs text-gray-500">${row[7]}<br>${row[8]}</span></td>
+                        <td class="px-4 py-3"><a href="${row[10]}" target="_blank" class="text-blue-600 font-bold hover:underline">คลิกดูรูป</a></td>
+                        <td class="px-4 py-3">
+                            <select onchange="updateStatus(${index}, this)" class="rounded-lg border outline-none p-2 text-sm font-bold ${bgStatus}">
+                                <option value="รอจัดทำ" ${status === 'รอจัดทำ' ? 'selected' : ''}>รอจัดทำ</option>
+                                <option value="กำลังจัดทำ" ${status === 'กำลังจัดทำ' ? 'selected' : ''}>กำลังจัดทำ</option>
+                                <option value="ประชาสัมพันธ์แล้ว" ${status === 'ประชาสัมพันธ์แล้ว' ? 'selected' : ''}>ประชาสัมพันธ์แล้ว</option>
+                            </select>
+                        </td>
+                    </tr>
+                `;
+            });
+        }
+
+        function updateStatus(rowIndex, selectElement) {
+            const newStatus = selectElement.value;
+            const msgBox = document.getElementById('admin-msg');
+            
+            selectElement.disabled = true;
+            msgBox.classList.remove('hidden', 'bg-red-100', 'text-red-700', 'bg-green-100', 'text-green-700');
+            msgBox.classList.add('bg-blue-100', 'text-blue-700');
+            msgBox.innerText = 'กำลังอัปเดตสถานะ...';
+
+            fetch(API_URL, {
+                method: 'POST',
+                body: JSON.stringify({ action: 'updateStatus', rowIndex: rowIndex, newStatus: newStatus })
+            }).then(res => res.json()).then(result => {
+                if(result.status === 'success') {
+                    msgBox.classList.replace('bg-blue-100', 'bg-green-100');
+                    msgBox.classList.replace('text-blue-700', 'text-green-700');
+                    msgBox.innerText = 'อัปเดตสถานะเรียบร้อยแล้ว';
+                    setTimeout(() => msgBox.classList.add('hidden'), 3000);
+                    loadData(); 
+                }
+            }).catch(err => {
+                msgBox.classList.replace('bg-blue-100', 'bg-red-100');
+                msgBox.classList.replace('text-blue-700', 'text-red-700');
+                msgBox.innerText = 'เกิดข้อผิดพลาดในการอัปเดต';
+                selectElement.disabled = false;
+            });
+        }
+    </script>
+</body>
+</html>
