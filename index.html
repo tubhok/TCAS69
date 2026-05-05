@@ -235,7 +235,7 @@
             const savedSession = localStorage.getItem('mst_pr_session');
             if (savedSession) {
                 const userData = JSON.parse(savedSession);
-                showDashboard(userData.email, userData.studentId, userData.fullName);
+                showDashboard(userData.email, userData.studentId, userData.fullName, userData.engName);
             }
         };
 
@@ -268,13 +268,14 @@
                 .then(res => res.json())
                 .then(result => {
                     if(result.status === 'success') {
-                        // บันทึก Session ลงเครื่อง
+                        // บันทึก Session ลงเครื่อง พร้อมจำชื่อภาษาอังกฤษ
                         localStorage.setItem('mst_pr_session', JSON.stringify({
                             email: email,
                             studentId: result.studentId,
-                            fullName: result.fullName
+                            fullName: result.fullName,
+                            engName: result.engName || "" 
                         }));
-                        showDashboard(email, result.studentId, result.fullName);
+                        showDashboard(email, result.studentId, result.fullName, result.engName);
                     } else {
                         throw new Error(result.message);
                     }
@@ -287,14 +288,19 @@
         }
 
         // แสดงหน้า Dashboard
-        function showDashboard(email, id, name) {
+        function showDashboard(email, id, name, engName = "") {
             studentEmail = email;
             document.getElementById('welcome-section').classList.add('hidden');
             document.getElementById('dashboard-section').classList.remove('hidden');
             
             document.getElementById('studentId').value = id;
             document.getElementById('thaiName').value = name;
-            document.getElementById('user-display').innerText = `${name}`;
+            document.getElementById('user-display').innerText = `ผู้ใช้งาน: ${name}`;
+            
+            // เติมชื่อภาษาอังกฤษให้อัตโนมัติ (ถ้าเคยมีข้อมูล)
+            if (engName) {
+                document.getElementById('engName').value = engName;
+            }
             
             fetchTcasData();
         }
