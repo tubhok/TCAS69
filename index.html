@@ -17,7 +17,7 @@
             theme: { 
                 extend: { 
                     fontFamily: { sans: ['Anuphan', 'sans-serif'] },
-                    colors: { primary: '#581c87', secondary: '#7e22ce' }
+                    colors: { primary: '#581c87', secondary: '#7e22ce', line: '#06C755' }
                 } 
             } 
         }
@@ -31,75 +31,66 @@
 </head>
 <body class="text-gray-800 antialiased flex flex-col items-center justify-start p-4 md:p-8">
 
-    <!-- ================= ส่วนเข้าสู่ระบบ ================= -->
     <div id="welcome-section" class="max-w-md w-full glass-card p-8 rounded-3xl shadow-xl text-center fade-in mt-10">
         <div class="w-24 h-24 mx-auto bg-white rounded-full shadow-md flex items-center justify-center mb-6">
-            <img src="https://upload.wikimedia.org/wikipedia/th/thumb/3/36/Muang_Suratthani_School_Logo.png/220px-Muang_Suratthani_School_Logo.png" class="w-20 h-20 object-cover">
+            <img src="https://i.ibb.co/v62R38tD/tub-hok-2.png" alt="Logo" class="w-20 h-20 object-cover">
         </div>
-        <h1 class="text-2xl font-black text-primary mb-2">MST Admission PR</h1>
-        <p class="text-gray-500 mb-8 text-sm">รายงานการมีสิทธิ์เข้าศึกษาต่อ ม.6/6</p>
-
-        <button id="line-login-btn" onclick="loginLine()" class="w-full bg-[#06C755] hover:bg-[#05b34c] text-white font-bold py-3.5 px-6 rounded-full flex items-center justify-center gap-3 transition-colors shadow-sm">
-            <svg class="w-6 h-6 fill-current" viewBox="0 0 24 24"><path d="M24 10.304c0-5.369-5.383-9.738-12-9.738-6.616 0-12 4.369-12 9.738 0 4.814 4.269 8.846 10.036 9.608.391.084.922.258 1.057.592.122.303.079.778.039 1.085l-.171 1.027c-.053.303-.242 1.186 1.039.647 1.281-.54 6.911-4.069 9.428-6.967 1.739-1.907 2.572-3.843 2.572-5.992z"/></svg>
-            เข้าสู่ระบบด้วย LINE
-        </button>
-
-        <button id="login-loading-btn" class="hidden w-full bg-gray-100 text-gray-500 font-bold py-3.5 px-6 rounded-full flex items-center justify-center gap-3 cursor-wait">
-            <div class="animate-spin rounded-full h-5 w-5 border-b-2 border-gray-500"></div>
-            กำลังเชื่อมต่อ LINE...
-        </button>
-        <div id="login-error-msg" class="hidden mt-4 text-sm font-bold text-red-500 bg-red-50 p-3 rounded-lg border border-red-100"></div>
+        <h1 class="text-2xl font-black text-primary mb-2">TCAS69 x TUBHOK</h1>
+        <h2 class="text-xl font-bold text-gray-600 mb-4">รายงานการมีสิทธิ์เข้าศึกษาต่อ</h2>
+        
+        <div id="loading-container" class="flex flex-col items-center justify-center gap-3 py-4">
+            <div class="animate-spin rounded-full h-8 w-8 border-b-2 border-primary"></div>
+            <p class="text-gray-500 text-sm font-bold">กำลังเชื่อมต่อกับ LINE...</p>
+        </div>
+        
+        <div id="line-error-msg" class="hidden mt-4 text-sm font-bold text-red-500 bg-red-50 p-3 rounded-lg border border-red-100"></div>
     </div>
 
-    <div id="register-section" class="hidden max-w-md w-full glass-card p-8 rounded-3xl shadow-xl text-center fade-in mt-10">
-        <div class="w-16 h-16 bg-purple-100 text-primary rounded-full flex items-center justify-center mx-auto mb-4">
+    <div id="verify-section" class="hidden max-w-md w-full glass-card p-8 rounded-3xl shadow-xl text-center fade-in mt-10">
+        <div class="w-16 h-16 mx-auto bg-green-100 text-green-600 rounded-full flex items-center justify-center mb-4">
             <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"></path></svg>
         </div>
-        <h2 class="text-xl font-bold text-gray-800 mb-2">ยืนยันตัวตนนักเรียน</h2>
-        <p class="text-sm text-gray-500 mb-6">คุณเข้าใช้งานครั้งแรก กรุณายืนยันสิทธิ์เพื่อผูกบัญชี LINE นี้เข้ากับข้อมูลของคุณ</p>
+        <h2 class="text-2xl font-black text-primary mb-2">ยืนยันตัวตนนักเรียน</h2>
+        <p class="text-gray-500 mb-6 text-sm">ตรวจพบการใช้งานครั้งแรก กรุณากรอกข้อมูลเพื่อผูกบัญชี LINE กับข้อมูลนักเรียนของคุณ</p>
         
-        <form id="verifyForm" onsubmit="handleVerification(event)" class="space-y-4 text-left">
+        <form id="verifyForm" onsubmit="handleVerifySubmit(event)" class="space-y-4 text-left">
             <div>
-                <label class="block text-sm font-bold text-gray-700 mb-1">รหัสนักเรียน 5 หลัก</label>
-                <input type="text" id="verify-student-id" required pattern="[0-9]{5}" placeholder="เช่น 68282" class="w-full bg-white border border-gray-300 rounded-xl p-3 focus:ring-2 focus:ring-primary outline-none">
+                <label class="block text-sm font-bold text-gray-700 mb-1">รหัสนักเรียน</label>
+                <input type="text" id="v-studentId" required placeholder="เช่น 68001" class="w-full bg-white border border-gray-300 rounded-xl p-3 focus:ring-2 focus:ring-primary outline-none">
             </div>
             <div>
                 <label class="block text-sm font-bold text-gray-700 mb-1">เลขประจำตัวประชาชน 13 หลัก</label>
-                <input type="text" id="verify-national-id" required pattern="[0-9]{13}" placeholder="ระบุเฉพาะตัวเลข 13 หลัก" class="w-full bg-white border border-gray-300 rounded-xl p-3 focus:ring-2 focus:ring-primary outline-none">
+                <input type="password" id="v-nationalId" required maxlength="13" placeholder="ระบุเลขบัตร 13 หลัก" class="w-full bg-white border border-gray-300 rounded-xl p-3 focus:ring-2 focus:ring-primary outline-none">
             </div>
-            <div id="verify-error-msg" class="hidden text-sm font-bold text-red-500 bg-red-50 p-2 rounded text-center"></div>
-            <button type="submit" id="verifyBtn" class="w-full bg-primary hover:bg-purple-900 text-white font-bold py-3 px-6 rounded-xl shadow-md transition-all mt-2">
-                ยืนยันเพื่อเข้าสู่ระบบ
+            
+            <div id="verify-error-msg" class="hidden text-sm font-bold text-red-500 bg-red-50 p-3 rounded-lg border border-red-100 text-center"></div>
+            
+            <button type="submit" id="verifyBtn" class="w-full bg-green-500 hover:bg-green-600 text-white font-bold py-3 px-6 rounded-xl shadow-md transition-all flex items-center justify-center gap-2 mt-4">
+                ยืนยันและผูกบัญชี LINE
             </button>
         </form>
     </div>
 
-    <!-- ================= ส่วน Dashboard หลัก ================= -->
     <div id="dashboard-section" class="hidden w-full max-w-4xl mx-auto fade-in">
         
-        <!-- Header Profile & Tabs -->
         <div class="glass-card w-full p-6 md:p-8 rounded-3xl shadow-xl mb-6 border border-purple-100 relative overflow-hidden">
             <div class="absolute top-0 left-0 w-full h-2 bg-gradient-to-r from-primary to-secondary"></div>
             <div class="flex flex-col md:flex-row justify-between items-center gap-4">
-                <!-- ส่วนที่ต้องแทนที่ใน Header Profile & Tabs -->
-<div class="text-center md:text-left">
-    <h2 class="text-2xl font-black text-primary">TCAS69 x TUBHOK</h2>
-    <p class="text-gray-500 text-sm">ระบบรายงานการมีสิทธิ์เข้าศึกษาต่อ</p>
-    <div class="flex flex-col items-center md:items-start gap-2 mt-2">
-        <p class="text-gray-500 text-sm font-medium" id="user-display">ผู้ใช้งาน: </p>
-        <!-- ปุ่มออกจากระบบ (ย้ายมาอยู่ด้านล่าง) -->
-        <button onclick="logout()" class="text-xs w-fit bg-red-100 text-red-600 hover:bg-red-200 px-4 py-1.5 rounded-full font-bold transition-colors focus:outline-none">ออกจากระบบ</button>
-    </div>
-</div>
-                <!-- Navigation Tabs -->
+                <div class="text-center md:text-left flex items-center gap-4">
+                    <img id="line-profile-img" src="" class="w-16 h-16 rounded-full border-2 border-green-400 hidden md:block object-cover">
+                    <div>
+                        <h2 class="text-2xl font-black text-primary">TCAS69 x TUBHOK</h2>
+                        <p class="text-gray-500 text-sm mb-1">ระบบรายงานการมีสิทธิ์เข้าศึกษาต่อ</p>
+                        <p class="text-gray-800 text-sm font-bold" id="user-display">ผู้ใช้งาน: กำลังโหลด...</p>
+                    </div>
+                </div>
                 <div class="flex bg-gray-100 p-1 rounded-xl w-full md:w-auto">
-                    <button onclick="switchTab('form')" id="tab-form" class="flex-1 md:flex-none px-6 py-2.5 rounded-lg font-bold text-sm transition-all bg-white shadow text-primary">รายงานผลใหม่</button>
-                    <button onclick="switchTab('history')" id="tab-history" class="flex-1 md:flex-none px-6 py-2.5 rounded-lg font-bold text-sm transition-all text-gray-500 hover:text-gray-700">ประวัติของฉัน</button>
+                    <button onclick="switchTab('form')" id="tab-form" class="flex-1 md:flex-none px-6 py-2.5 rounded-lg font-bold text-sm transition-all bg-white shadow text-primary focus:outline-none">รายงานผลใหม่</button>
+                    <button onclick="switchTab('history')" id="tab-history" class="flex-1 md:flex-none px-6 py-2.5 rounded-lg font-bold text-sm transition-all text-gray-500 hover:text-gray-700 focus:outline-none">ประวัติของฉัน</button>
                 </div>
             </div>
         </div>
 
-        <!-- ================= View 1: ฟอร์มรายงานผล ================= -->
         <div id="view-form" class="glass-card w-full p-6 md:p-8 rounded-3xl shadow-xl border border-white">
             
             <div id="success-msg" class="hidden mb-6 p-6 bg-green-50 text-green-700 border border-green-200 rounded-2xl text-center fade-in">
@@ -110,7 +101,6 @@
             </div>
 
             <form id="admissionForm" onsubmit="handleFormSubmit(event)" class="space-y-6">
-                <!-- ข้อมูลส่วนตัว -->
                 <div class="bg-purple-50/50 p-5 rounded-2xl border border-purple-100">
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                         <div>
@@ -137,7 +127,6 @@
                     </select>
                 </div>
 
-                <!-- กล่องข้อมูล TCAS -->
                 <div id="tcas-inputs" class="hidden bg-indigo-50 p-5 rounded-2xl border border-indigo-100 space-y-4">
                     <div id="tcas-loading-text" class="text-sm text-indigo-600 font-bold animate-pulse">กำลังซิงค์ข้อมูลจากระบบกลาง MyTCAS...</div>
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -168,7 +157,6 @@
                     </div>
                 </div>
 
-                <!-- กล่องข้อมูล นอกระบบ TCAS -->
                 <div id="manual-inputs" class="hidden bg-gray-50 p-5 rounded-2xl border border-gray-200 space-y-4">
                     <div class="md:col-span-2">
                         <label class="block text-sm font-bold text-gray-700 mb-1">ชื่อสถาบัน/มหาวิทยาลัย *</label>
@@ -218,7 +206,6 @@
             </form>
         </div>
 
-        <!-- ================= View 2: ประวัติการรายงาน ================= -->
         <div id="view-history" class="hidden space-y-4 fade-in">
             <h3 class="text-xl font-bold text-gray-800 mb-4 px-2">ข้อมูลที่รายงานแล้ว</h3>
             
@@ -236,123 +223,124 @@
             </div>
 
             <div id="history-list" class="hidden space-y-4">
-                <!-- ข้อมูลประวัติจะถูกแสดงตรงนี้เป็น Card -->
-            </div>
+                </div>
         </div>
     </div>
 
     <script>
-        const API_URL = 'https://script.google.com/macros/s/AKfycbyGdRDsQvafi7ERjekEO87jeb1sYTMBsbmmtlGvnd_OFvkAvlyhSs2RGHxqK2suKZzB/exec';
-        let currentLineUid = ""; 
-        let currentStudentId = ""; 
+        const API_URL = 'https://script.google.com/macros/s/AKfycbyGdRDsQvafi7ERjekEO87jeb1sYTMBsbmmtlGvnd_OFvkAvlyhSs2RGHxqK2suKZzB/exec'; // <-- นำ Web App URL มาใส่ตรงนี้
+        const LIFF_ID = 'YOUR_LIFF_ID_HERE'; // <--- เอา LIFF ID จาก LINE Developer Console มาใส่ตรงนี้
+        
         let tcasTree = {};
+        let currentUserProfile = null;
+        let currentStudentId = "";
 
-        // โหลด LINE LIFF ทันทีที่เปิดหน้าเว็บ
-        window.onload = async function() {
-            try {
-                // TODO: ใส่ LIFF ID ที่ได้จาก LINE Developers ลงในช่อง "YOUR_LIFF_ID_HERE"
-                await liff.init({ liffId: "2007500174-zI8YgAW8" }); 
-                
-                if (liff.isLoggedIn()) {
-                    document.getElementById('line-login-btn').classList.add('hidden');
-                    document.getElementById('login-loading-btn').classList.remove('hidden');
-                    
-                    const profile = await liff.getProfile();
-                    currentLineUid = profile.userId;
-                    verifyLiffWithBackend(currentLineUid);
-                }
-            } catch (err) {
-                console.error("LIFF Init Error:", err);
-            }
+        // ทำงานตอนโหลดหน้าเว็บ
+        window.onload = function() {
+            initializeLiff();
         };
 
-        // กดปุ่มล็อกอิน LINE
-        function loginLine() {
-            if (!liff.isLoggedIn()) {
-                liff.login();
-            }
+        function initializeLiff() {
+            liff.init({ liffId: LIFF_ID }).then(() => {
+                if (!liff.isLoggedIn()) {
+                    // หากไม่ได้ล็อกอิน ให้บังคับล็อกอินผ่าน LINE ทันที
+                    liff.login();
+                } else {
+                    // ล็อกอินแล้ว ดึงข้อมูลผู้ใช้
+                    liff.getProfile().then(profile => {
+                        currentUserProfile = profile;
+                        checkLineRegistration(profile.userId);
+                    }).catch(err => {
+                        showLineError("ไม่สามารถดึงข้อมูลโปรไฟล์ LINE ได้");
+                    });
+                }
+            }).catch(err => {
+                showLineError("ตั้งค่า LIFF ID ไม่ถูกต้อง หรือเปิดเว็บผิดช่องทาง");
+            });
         }
 
-        // กดปุ่มออกจากระบบ
-        function logout() {
-            if(liff.isLoggedIn()) {
-                liff.logout();
-            }
-            window.location.reload();
+        function showLineError(msg) {
+            document.getElementById('loading-container').classList.add('hidden');
+            const errorEl = document.getElementById('line-error-msg');
+            errorEl.innerText = msg;
+            errorEl.classList.remove('hidden');
         }
 
-        // ตรวจสอบกับฐานข้อมูลว่า LINE UID นี้เคยผูกกับรหัสนักเรียนไว้หรือยัง
-        function verifyLiffWithBackend(uid) {
-            const errorMsg = document.getElementById('login-error-msg');
-            errorMsg.classList.add('hidden');
-
-            fetch(`${API_URL}?action=verifyLiffUser&lineUid=${uid}`)
+        // ตรวจสอบว่าเคยยืนยันตัวตนแล้วหรือยัง
+        function checkLineRegistration(lineUid) {
+            fetch(`${API_URL}?action=verifyLineUid&lineUid=${lineUid}`)
                 .then(res => res.json())
                 .then(result => {
-                    if(result.status === 'success') {
-                        currentStudentId = result.studentId;
+                    if (result.status === 'success') {
+                        // เคยผูกแล้ว เข้าสู่ระบบได้เลย
                         showDashboard(result.studentId, result.fullName, result.engName);
-                    } else if (result.status === 'not_registered') {
-                        // ยังไม่เคยผูก LINE ให้โชว์ฟอร์มยืนยันตัวตน
+                    } else if (result.status === 'not_found') {
+                        // ยังไม่เคยผูก ให้แสดงหน้ายืนยันตัวตนครั้งแรก
                         document.getElementById('welcome-section').classList.add('hidden');
-                        document.getElementById('register-section').classList.remove('hidden');
+                        document.getElementById('verify-section').classList.remove('hidden');
                     } else {
-                        throw new Error(result.message);
+                        showLineError("เกิดข้อผิดพลาดในการตรวจสอบข้อมูลเซิร์ฟเวอร์");
                     }
-                }).catch(err => {
-                    document.getElementById('login-loading-btn').classList.add('hidden');
-                    document.getElementById('line-login-btn').classList.remove('hidden');
-                    errorMsg.innerText = err.message || 'เชื่อมต่อเซิร์ฟเวอร์ไม่ได้ กรุณาลองใหม่';
-                    errorMsg.classList.remove('hidden');
-                });
+                }).catch(err => showLineError("เชื่อมต่อเซิร์ฟเวอร์ไม่ได้ กรุณาลองใหม่"));
         }
 
-        // ฟังก์ชันเมื่อกด "ยืนยันเพื่อเข้าสู่ระบบ" ในหน้าผูกบัญชีครั้งแรก
-        function handleVerification(e) {
+        // ฟอร์มยืนยันตัวตนและผูกบัญชี LINE
+        function handleVerifySubmit(e) {
             e.preventDefault();
             const btn = document.getElementById('verifyBtn');
             const errorMsg = document.getElementById('verify-error-msg');
-            
+            const studentId = document.getElementById('v-studentId').value;
+            const nationalId = document.getElementById('v-nationalId').value;
+
             btn.disabled = true;
-            btn.innerText = 'กำลังตรวจสอบ...';
+            btn.classList.add('opacity-70', 'cursor-not-allowed');
+            btn.innerText = "กำลังตรวจสอบ...";
             errorMsg.classList.add('hidden');
 
             const payload = {
-                action: 'registerLiffUser',
-                lineUid: currentLineUid,
-                studentId: document.getElementById('verify-student-id').value.trim(),
-                nationalId: document.getElementById('verify-national-id').value.trim()
+                action: 'registerLineUid',
+                studentId: studentId,
+                nationalId: nationalId,
+                lineUid: currentUserProfile.userId
             };
 
             fetch(API_URL, {
                 method: 'POST',
                 body: JSON.stringify(payload)
             }).then(res => res.json()).then(result => {
-                if(result.status === 'success') {
-                    document.getElementById('register-section').classList.add('hidden');
-                    currentStudentId = result.studentId;
+                if (result.status === 'success') {
+                    // ผูกสำเร็จ แสดงหน้า Dashboard (ชื่ออังกฤษจะยังว่างอยู่เพราะยังไม่เคยรายงาน)
+                    document.getElementById('verify-section').classList.add('hidden');
                     showDashboard(result.studentId, result.fullName, "");
                 } else {
                     throw new Error(result.message);
                 }
             }).catch(err => {
-                errorMsg.innerText = err.message;
+                errorMsg.innerText = err.message || "เกิดข้อผิดพลาด กรุณาลองใหม่";
                 errorMsg.classList.remove('hidden');
                 btn.disabled = false;
-                btn.innerText = 'ยืนยันเพื่อเข้าสู่ระบบ';
+                btn.classList.remove('opacity-70', 'cursor-not-allowed');
+                btn.innerText = "ยืนยันและผูกบัญชี LINE";
             });
         }
 
-        // แสดงหน้า Dashboard หลังจากล็อกอิน/ยืนยันตัวตนผ่าน
-        function showDashboard(id, name, engName = "") {
+        // แสดงหน้า Dashboard หลังจากล็อกอิน/ยืนยันตัวตนสำเร็จ
+        function showDashboard(studentId, fullName, engName = "") {
+            currentStudentId = studentId;
             document.getElementById('welcome-section').classList.add('hidden');
             document.getElementById('dashboard-section').classList.remove('hidden');
             
-            document.getElementById('studentId').value = id;
-            document.getElementById('thaiName').value = name;
-            document.getElementById('user-display').innerText = `ผู้ใช้งาน: ${name}`;
+            document.getElementById('studentId').value = studentId;
+            document.getElementById('thaiName').value = fullName;
+            document.getElementById('user-display').innerText = `ผู้ใช้งาน: ${fullName}`;
             
-            // เติมชื่อภาษาอังกฤษอัตโนมัติถ้าเคยกรอกแล้ว
+            // นำรูปโปรไฟล์ LINE มาแสดง
+            if (currentUserProfile && currentUserProfile.pictureUrl) {
+                const imgEl = document.getElementById('line-profile-img');
+                imgEl.src = currentUserProfile.pictureUrl;
+                imgEl.classList.remove('hidden');
+            }
+
             if (engName) {
                 document.getElementById('engName').value = engName;
             }
@@ -385,7 +373,7 @@
             }
         }
 
-        // โหลดประวัติการรายงานผล (เปลี่ยนเป็นค้นหาด้วย studentId แทน email)
+        // โหลดประวัติการรายงานผล
         function fetchHistory() {
             const listContainer = document.getElementById('history-list');
             const emptyState = document.getElementById('history-empty');
@@ -395,6 +383,7 @@
             emptyState.classList.add('hidden');
             loadingState.classList.remove('hidden');
 
+            // ใช้ currentStudentId แทน email ในการดึงประวัติ
             fetch(`${API_URL}?action=getStudentHistory&studentId=${currentStudentId}`)
                 .then(res => res.json())
                 .then(result => {
@@ -417,33 +406,25 @@
                 });
         }
 
-        // สร้างหน้าตา Card ประวัติ
         function renderHistoryCards(data) {
             const container = document.getElementById('history-list');
             container.innerHTML = '';
 
             data.forEach(item => {
                 let statusBadge = '';
-                if (item.status === 'รอจัดทำ') {
-                    statusBadge = `<span class="px-3 py-1 bg-red-100 text-red-700 text-xs font-bold rounded-full border border-red-200 shadow-sm">${item.status}</span>`;
-                } else if (item.status === 'กำลังจัดทำ') {
-                    statusBadge = `<span class="px-3 py-1 bg-yellow-100 text-yellow-700 text-xs font-bold rounded-full border border-yellow-200 shadow-sm">${item.status}</span>`;
-                } else {
-                    statusBadge = `<span class="px-3 py-1 bg-green-100 text-green-700 text-xs font-bold rounded-full border border-green-200 shadow-sm">${item.status}</span>`;
-                }
+                if (item.status === 'รอจัดทำ') statusBadge = `<span class="px-3 py-1 bg-red-100 text-red-700 text-xs font-bold rounded-full border border-red-200 shadow-sm">${item.status}</span>`;
+                else if (item.status === 'กำลังจัดทำ') statusBadge = `<span class="px-3 py-1 bg-yellow-100 text-yellow-700 text-xs font-bold rounded-full border border-yellow-200 shadow-sm">${item.status}</span>`;
+                else statusBadge = `<span class="px-3 py-1 bg-green-100 text-green-700 text-xs font-bold rounded-full border border-green-200 shadow-sm">${item.status}</span>`;
 
                 const card = `
                     <div class="bg-white p-5 md:p-6 rounded-2xl border border-gray-200 shadow-sm hover:shadow-md transition-shadow relative">
-                        <div class="flex justify-end mb-2">
-                            ${statusBadge}
-                        </div>
+                        <div class="mb-2">${statusBadge}</div>
                         <h4 class="font-bold text-lg text-primary leading-tight mb-3">${item.university}</h4>
-                        
                         <div class="space-y-1.5 mb-4">
                             <p class="text-sm text-gray-700"><span class="font-semibold text-gray-500 w-16 inline-block">ระบบ:</span> <span class="bg-gray-100 px-2 py-0.5 rounded text-xs">${item.systemType}</span></p>
-                            <p class="text-sm text-gray-700"><span class="font-semibold text-gray-500 w-16 inline-block">คณะ:</span> ${item.faculty}</p>
-                            <p class="text-sm text-gray-700"><span class="font-semibold text-gray-500 w-16 inline-block">สาขา:</span> ${item.major}</p>
-                            <p class="text-sm text-gray-700"><span class="font-semibold text-gray-500 w-16 inline-block">รอบ:</span> <span class="bg-purple-50 text-purple-700 px-2 py-0.5 rounded text-xs font-medium border border-purple-100">${item.round}</span></p>
+                            <p class="text-sm text-gray-700"><span class="font-semibold text-gray-500 w-16 inline-block"></span> ${item.faculty}</p>
+                            <p class="text-sm text-gray-700"><span class="font-semibold text-gray-500 w-16 inline-block"></span> ${item.major}</p>
+                            <p class="text-sm text-gray-700"><span class="font-semibold text-gray-500 w-16 inline-block"></span> <span class="bg-purple-50 text-purple-700 px-2 py-0.5 rounded text-xs font-medium border border-purple-100">${item.round}</span></p>
                         </div>
                         <div class="text-xs text-gray-400 flex items-center gap-1 border-t border-gray-100 pt-3 mt-2">
                             <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
@@ -455,32 +436,25 @@
             });
         }
 
-        // ดึงข้อมูล TCAS จาก courses.json
         function fetchTcasData() {
             const loadingText = document.getElementById('tcas-loading-text');
             const uniSelect = document.getElementById('tcas-uni');
-            
             fetch("https://my-tcas.s3.ap-southeast-1.amazonaws.com/mytcas/courses.json")
                 .then(res => res.json())
                 .then(data => {
                     loadingText.classList.add('hidden');
                     uniSelect.disabled = false;
-                    
                     data.forEach(item => {
                         const uni = item.university_name_th;
                         const campus = item.campus_name_th || 'วิทยาเขตหลัก';
                         const fac = item.faculty_name_th;
                         const major = item.major_name_th ? item.major_name_th : item.program_name_th;
-
                         if (!tcasTree[uni]) tcasTree[uni] = {};
                         if (!tcasTree[uni][campus]) tcasTree[uni][campus] = {};
                         if (!tcasTree[uni][campus][fac]) tcasTree[uni][campus][fac] = new Set();
                         tcasTree[uni][campus][fac].add(major);
                     });
-
-                    Object.keys(tcasTree).sort().forEach(uni => {
-                        uniSelect.innerHTML += `<option value="${uni}">${uni}</option>`;
-                    });
+                    Object.keys(tcasTree).sort().forEach(uni => { uniSelect.innerHTML += `<option value="${uni}">${uni}</option>`; });
                 })
                 .catch(err => {
                     loadingText.innerText = 'ดึงข้อมูลล้มเหลว กรุณาเลือก "นอกระบบ" เพื่อพิมพ์ข้อมูลเอง';
@@ -489,87 +463,41 @@
                 });
         }
 
-        // ระบบ Cascading Dropdown (TCAS)
         function populateCampuses() {
             const uni = document.getElementById('tcas-uni').value;
             const campusSelect = document.getElementById('tcas-campus');
             const facSelect = document.getElementById('tcas-faculty');
             const majorSelect = document.getElementById('tcas-major');
-            
-            campusSelect.innerHTML = '<option value="">-- เลือกวิทยาเขต --</option>';
-            facSelect.innerHTML = '<option value="">-- เลือกคณะ --</option>';
-            majorSelect.innerHTML = '<option value="">-- เลือกสาขาวิชา --</option>';
+            campusSelect.innerHTML = '<option value="">-- เลือกวิทยาเขต --</option>'; facSelect.innerHTML = '<option value="">-- เลือกคณะ --</option>'; majorSelect.innerHTML = '<option value="">-- เลือกสาขาวิชา --</option>';
             campusSelect.disabled = true; facSelect.disabled = true; majorSelect.disabled = true;
-            
-            if (uni && tcasTree[uni]) {
-                Object.keys(tcasTree[uni]).sort().forEach(campus => {
-                    campusSelect.innerHTML += `<option value="${campus}">${campus}</option>`;
-                });
-                campusSelect.disabled = false;
-            }
+            if (uni && tcasTree[uni]) { Object.keys(tcasTree[uni]).sort().forEach(campus => { campusSelect.innerHTML += `<option value="${campus}">${campus}</option>`; }); campusSelect.disabled = false; }
         }
 
         function populateFaculties() {
-            const uni = document.getElementById('tcas-uni').value;
-            const campus = document.getElementById('tcas-campus').value;
-            const facSelect = document.getElementById('tcas-faculty');
-            const majorSelect = document.getElementById('tcas-major');
-            
-            facSelect.innerHTML = '<option value="">-- เลือกคณะ --</option>';
-            majorSelect.innerHTML = '<option value="">-- เลือกสาขาวิชา --</option>';
+            const uni = document.getElementById('tcas-uni').value; const campus = document.getElementById('tcas-campus').value;
+            const facSelect = document.getElementById('tcas-faculty'); const majorSelect = document.getElementById('tcas-major');
+            facSelect.innerHTML = '<option value="">-- เลือกคณะ --</option>'; majorSelect.innerHTML = '<option value="">-- เลือกสาขาวิชา --</option>';
             facSelect.disabled = true; majorSelect.disabled = true;
-            
-            if (uni && campus && tcasTree[uni][campus]) {
-                Object.keys(tcasTree[uni][campus]).sort().forEach(fac => {
-                    facSelect.innerHTML += `<option value="${fac}">${fac}</option>`;
-                });
-                facSelect.disabled = false;
-            }
+            if (uni && campus && tcasTree[uni][campus]) { Object.keys(tcasTree[uni][campus]).sort().forEach(fac => { facSelect.innerHTML += `<option value="${fac}">${fac}</option>`; }); facSelect.disabled = false; }
         }
 
         function populateMajors() {
-            const uni = document.getElementById('tcas-uni').value;
-            const campus = document.getElementById('tcas-campus').value;
-            const fac = document.getElementById('tcas-faculty').value;
+            const uni = document.getElementById('tcas-uni').value; const campus = document.getElementById('tcas-campus').value; const fac = document.getElementById('tcas-faculty').value;
             const majorSelect = document.getElementById('tcas-major');
-            
-            majorSelect.innerHTML = '<option value="">-- เลือกสาขาวิชา --</option>';
-            majorSelect.disabled = true;
-            
-            if (uni && campus && fac && tcasTree[uni][campus][fac]) {
-                Array.from(tcasTree[uni][campus][fac]).sort().forEach(major => {
-                    majorSelect.innerHTML += `<option value="${major}">${major}</option>`;
-                });
-                majorSelect.disabled = false;
-            }
+            majorSelect.innerHTML = '<option value="">-- เลือกสาขาวิชา --</option>'; majorSelect.disabled = true;
+            if (uni && campus && fac && tcasTree[uni][campus][fac]) { Array.from(tcasTree[uni][campus][fac]).sort().forEach(major => { majorSelect.innerHTML += `<option value="${major}">${major}</option>`; }); majorSelect.disabled = false; }
         }
 
         function toggleSystemType() {
             const type = document.getElementById('systemType').value;
-            const tcasDiv = document.getElementById('tcas-inputs');
-            const manualDiv = document.getElementById('manual-inputs');
-            
+            const tcasDiv = document.getElementById('tcas-inputs'); const manualDiv = document.getElementById('manual-inputs');
             const tcasInputs = [document.getElementById('tcas-uni'), document.getElementById('tcas-campus'), document.getElementById('tcas-faculty'), document.getElementById('tcas-major')];
             const manualInputs = [document.getElementById('manual-uni'), document.getElementById('manual-faculty'), document.getElementById('manual-major')];
-
-            if (type === 'TCAS') {
-                tcasDiv.classList.remove('hidden');
-                manualDiv.classList.add('hidden');
-                tcasInputs.forEach(el => el.required = true);
-                manualInputs.forEach(el => { el.required = false; el.value = ''; });
-            } else if (type === 'NON_TCAS') {
-                tcasDiv.classList.add('hidden');
-                manualDiv.classList.remove('hidden');
-                manualInputs.forEach(el => el.required = true);
-                tcasInputs.forEach(el => { el.required = false; el.value = ''; });
-            } else {
-                tcasDiv.classList.add('hidden');
-                manualDiv.classList.add('hidden');
-                tcasInputs.concat(manualInputs).forEach(el => el.required = false);
-            }
+            if (type === 'TCAS') { tcasDiv.classList.remove('hidden'); manualDiv.classList.add('hidden'); tcasInputs.forEach(el => el.required = true); manualInputs.forEach(el => { el.required = false; el.value = ''; }); }
+            else if (type === 'NON_TCAS') { tcasDiv.classList.add('hidden'); manualDiv.classList.remove('hidden'); manualInputs.forEach(el => el.required = true); tcasInputs.forEach(el => { el.required = false; el.value = ''; }); }
+            else { tcasDiv.classList.add('hidden'); manualDiv.classList.add('hidden'); tcasInputs.concat(manualInputs).forEach(el => el.required = false); }
         }
 
-        // กดส่งฟอร์ม (แก้ไข payload ให้ส่ง lineUid แทน email)
         function handleFormSubmit(e) {
             e.preventDefault();
             const btn = document.getElementById('submitBtn');
@@ -586,13 +514,12 @@
             reader.onload = function(event) {
                 const base64Data = event.target.result.split(',')[1];
                 const isTcas = document.getElementById('systemType').value === 'TCAS';
-
                 const finalUni = isTcas ? `${document.getElementById('tcas-uni').value} (${document.getElementById('tcas-campus').value})` : document.getElementById('manual-uni').value;
 
                 const payload = {
                     action: 'submitForm',
-                    studentId: currentStudentId,
-                    lineUid: currentLineUid,
+                    studentId: document.getElementById('studentId').value,
+                    lineUid: currentUserProfile.userId, // ใช้ LINE UID
                     thaiName: document.getElementById('thaiName').value,
                     engName: document.getElementById('engName').value,
                     systemType: isTcas ? "TCAS" : "รับตรง/นอกระบบ",
