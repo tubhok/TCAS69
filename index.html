@@ -11,7 +11,7 @@
     <link href="https://fonts.googleapis.com/css2?family=Anuphan:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
     
     <script src="https://cdn.tailwindcss.com"></script>
-    <script src="https://accounts.google.com/gsi/client" async defer></script>
+    <script src="https://static.line-scdn.net/liff/edge/2/sdk.js"></script>
     <script>
         tailwind.config = { 
             theme: { 
@@ -34,28 +34,44 @@
     <!-- ================= ส่วนเข้าสู่ระบบ ================= -->
     <div id="welcome-section" class="max-w-md w-full glass-card p-8 rounded-3xl shadow-xl text-center fade-in mt-10">
         <div class="w-24 h-24 mx-auto bg-white rounded-full shadow-md flex items-center justify-center mb-6">
-            <img src="https://i.ibb.co/v62R38tD/tub-hok-2.png" alt="Logo" class="w-20 h-20 object-cover">
+            <img src="https://upload.wikimedia.org/wikipedia/th/thumb/3/36/Muang_Suratthani_School_Logo.png/220px-Muang_Suratthani_School_Logo.png" class="w-20 h-20 object-cover">
         </div>
-        <h1 class="text-2xl font-black text-primary mb-2">TCAS69 x TUBHOK</h1>
-        <h2 class="text-xl font-bold text-gray-600 mb-4">รายงานการมีสิทธิ์เข้าศึกษาต่อ</h2>
-        <p class="text-gray-500 mb-8 text-sm">เข้าสู่ระบบด้วย @mst.ac.th เพื่อรายงานผล</p>
+        <h1 class="text-2xl font-black text-primary mb-2">MST Admission PR</h1>
+        <p class="text-gray-500 mb-8 text-sm">รายงานการมีสิทธิ์เข้าศึกษาต่อ ม.6/6</p>
 
-        <div id="google-btn-wrapper" class="flex justify-center flex-col items-center">
-            <div id="g_id_onload"
-                 data-client_id="191964444705-11pkarpe2i4h86nmt724i12mg0kv5hjg.apps.googleusercontent.com" 
-                 data-callback="handleCredentialResponse"
-                 data-hosted_domain="mst.ac.th"
-                 data-auto_prompt="false">
-            </div>
-            <div class="g_id_signin" data-type="standard" data-size="large" data-theme="outline" data-shape="pill"></div>
-        </div>
-
-        <button id="login-loading-btn" class="hidden w-full bg-gray-100 text-gray-500 font-bold py-3 px-6 rounded-full flex items-center justify-center gap-3 cursor-wait">
-            <div class="animate-spin rounded-full h-5 w-5 border-b-2 border-gray-500"></div>
-            กำลังตรวจสอบสิทธิ์...
+        <button id="line-login-btn" onclick="loginLine()" class="w-full bg-[#06C755] hover:bg-[#05b34c] text-white font-bold py-3.5 px-6 rounded-full flex items-center justify-center gap-3 transition-colors shadow-sm">
+            <svg class="w-6 h-6 fill-current" viewBox="0 0 24 24"><path d="M24 10.304c0-5.369-5.383-9.738-12-9.738-6.616 0-12 4.369-12 9.738 0 4.814 4.269 8.846 10.036 9.608.391.084.922.258 1.057.592.122.303.079.778.039 1.085l-.171 1.027c-.053.303-.242 1.186 1.039.647 1.281-.54 6.911-4.069 9.428-6.967 1.739-1.907 2.572-3.843 2.572-5.992z"/></svg>
+            เข้าสู่ระบบด้วย LINE
         </button>
 
+        <button id="login-loading-btn" class="hidden w-full bg-gray-100 text-gray-500 font-bold py-3.5 px-6 rounded-full flex items-center justify-center gap-3 cursor-wait">
+            <div class="animate-spin rounded-full h-5 w-5 border-b-2 border-gray-500"></div>
+            กำลังเชื่อมต่อ LINE...
+        </button>
         <div id="login-error-msg" class="hidden mt-4 text-sm font-bold text-red-500 bg-red-50 p-3 rounded-lg border border-red-100"></div>
+    </div>
+
+    <div id="register-section" class="hidden max-w-md w-full glass-card p-8 rounded-3xl shadow-xl text-center fade-in mt-10">
+        <div class="w-16 h-16 bg-purple-100 text-primary rounded-full flex items-center justify-center mx-auto mb-4">
+            <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"></path></svg>
+        </div>
+        <h2 class="text-xl font-bold text-gray-800 mb-2">ยืนยันตัวตนนักเรียน</h2>
+        <p class="text-sm text-gray-500 mb-6">คุณเข้าใช้งานครั้งแรก กรุณายืนยันสิทธิ์เพื่อผูกบัญชี LINE นี้เข้ากับข้อมูลของคุณ</p>
+        
+        <form id="verifyForm" onsubmit="handleVerification(event)" class="space-y-4 text-left">
+            <div>
+                <label class="block text-sm font-bold text-gray-700 mb-1">รหัสนักเรียน 5 หลัก</label>
+                <input type="text" id="verify-student-id" required pattern="[0-9]{5}" placeholder="เช่น 68282" class="w-full bg-white border border-gray-300 rounded-xl p-3 focus:ring-2 focus:ring-primary outline-none">
+            </div>
+            <div>
+                <label class="block text-sm font-bold text-gray-700 mb-1">เลขประจำตัวประชาชน 13 หลัก</label>
+                <input type="text" id="verify-national-id" required pattern="[0-9]{13}" placeholder="ระบุเฉพาะตัวเลข 13 หลัก" class="w-full bg-white border border-gray-300 rounded-xl p-3 focus:ring-2 focus:ring-primary outline-none">
+            </div>
+            <div id="verify-error-msg" class="hidden text-sm font-bold text-red-500 bg-red-50 p-2 rounded text-center"></div>
+            <button type="submit" id="verifyBtn" class="w-full bg-primary hover:bg-purple-900 text-white font-bold py-3 px-6 rounded-xl shadow-md transition-all mt-2">
+                ยืนยันเพื่อเข้าสู่ระบบ
+            </button>
+        </form>
     </div>
 
     <!-- ================= ส่วน Dashboard หลัก ================= -->
@@ -226,70 +242,109 @@
     </div>
 
     <script>
-        const API_URL = 'https://script.google.com/macros/s/AKfycbyGdRDsQvafi7ERjekEO87jeb1sYTMBsbmmtlGvnd_OFvkAvlyhSs2RGHxqK2suKZzB/exec'; // <-- นำ Web App URL มาใส่ตรงนี้
-        let studentEmail = "";
+        const API_URL = 'https://script.google.com/macros/s/AKfycbyGdRDsQvafi7ERjekEO87jeb1sYTMBsbmmtlGvnd_OFvkAvlyhSs2RGHxqK2suKZzB/exec';
+        let currentLineUid = ""; 
+        let currentStudentId = ""; 
         let tcasTree = {};
 
-        // ฟังก์ชันทำงานตอนโหลดหน้าเว็บเพื่อเช็ค Session การล็อกอิน
-        window.onload = function() {
-            const savedSession = localStorage.getItem('mst_pr_session');
-            if (savedSession) {
-                const userData = JSON.parse(savedSession);
-                showDashboard(userData.email, userData.studentId, userData.fullName, userData.engName);
+        // โหลด LINE LIFF ทันทีที่เปิดหน้าเว็บ
+        window.onload = async function() {
+            try {
+                // TODO: ใส่ LIFF ID ที่ได้จาก LINE Developers ลงในช่อง "YOUR_LIFF_ID_HERE"
+                await liff.init({ liffId: "2007500174-zI8YgAW8" }); 
+                
+                if (liff.isLoggedIn()) {
+                    document.getElementById('line-login-btn').classList.add('hidden');
+                    document.getElementById('login-loading-btn').classList.remove('hidden');
+                    
+                    const profile = await liff.getProfile();
+                    currentLineUid = profile.userId;
+                    verifyLiffWithBackend(currentLineUid);
+                }
+            } catch (err) {
+                console.error("LIFF Init Error:", err);
             }
         };
 
-        // ฟังก์ชันออกจากระบบ
+        // กดปุ่มล็อกอิน LINE
+        function loginLine() {
+            if (!liff.isLoggedIn()) {
+                liff.login();
+            }
+        }
+
+        // กดปุ่มออกจากระบบ
         function logout() {
-            localStorage.removeItem('mst_pr_session');
-            window.location.reload(); // รีเฟรชหน้าเพื่อกลับไปหน้าล็อกอิน
+            if(liff.isLoggedIn()) {
+                liff.logout();
+            }
+            window.location.reload();
         }
 
-        function parseJwt(token) {
-            const base64Url = token.split('.')[1];
-            const base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
-            return JSON.parse(decodeURIComponent(atob(base64).split('').map(c => '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2)).join('')));
-        }
-
-        // ล็อกอินผ่านปุ่ม Google
-        function handleCredentialResponse(response) {
-            const btnWrapper = document.getElementById('google-btn-wrapper');
-            const loadingBtn = document.getElementById('login-loading-btn');
+        // ตรวจสอบกับฐานข้อมูลว่า LINE UID นี้เคยผูกกับรหัสนักเรียนไว้หรือยัง
+        function verifyLiffWithBackend(uid) {
             const errorMsg = document.getElementById('login-error-msg');
-
-            btnWrapper.classList.add('hidden');
-            loadingBtn.classList.remove('hidden');
             errorMsg.classList.add('hidden');
 
-            const data = parseJwt(response.credential);
-            const email = data.email;
-            
-            fetch(`${API_URL}?action=verifyStudent&email=${email}`)
+            fetch(`${API_URL}?action=verifyLiffUser&lineUid=${uid}`)
                 .then(res => res.json())
                 .then(result => {
                     if(result.status === 'success') {
-                        // บันทึก Session ลงเครื่อง พร้อมจำชื่อภาษาอังกฤษ
-                        localStorage.setItem('mst_pr_session', JSON.stringify({
-                            email: email,
-                            studentId: result.studentId,
-                            fullName: result.fullName,
-                            engName: result.engName || "" 
-                        }));
-                        showDashboard(email, result.studentId, result.fullName, result.engName);
+                        currentStudentId = result.studentId;
+                        showDashboard(result.studentId, result.fullName, result.engName);
+                    } else if (result.status === 'not_registered') {
+                        // ยังไม่เคยผูก LINE ให้โชว์ฟอร์มยืนยันตัวตน
+                        document.getElementById('welcome-section').classList.add('hidden');
+                        document.getElementById('register-section').classList.remove('hidden');
                     } else {
                         throw new Error(result.message);
                     }
                 }).catch(err => {
-                    loadingBtn.classList.add('hidden');
-                    btnWrapper.classList.remove('hidden');
+                    document.getElementById('login-loading-btn').classList.add('hidden');
+                    document.getElementById('line-login-btn').classList.remove('hidden');
                     errorMsg.innerText = err.message || 'เชื่อมต่อเซิร์ฟเวอร์ไม่ได้ กรุณาลองใหม่';
                     errorMsg.classList.remove('hidden');
                 });
         }
 
-        // แสดงหน้า Dashboard
-        function showDashboard(email, id, name, engName = "") {
-            studentEmail = email;
+        // ฟังก์ชันเมื่อกด "ยืนยันเพื่อเข้าสู่ระบบ" ในหน้าผูกบัญชีครั้งแรก
+        function handleVerification(e) {
+            e.preventDefault();
+            const btn = document.getElementById('verifyBtn');
+            const errorMsg = document.getElementById('verify-error-msg');
+            
+            btn.disabled = true;
+            btn.innerText = 'กำลังตรวจสอบ...';
+            errorMsg.classList.add('hidden');
+
+            const payload = {
+                action: 'registerLiffUser',
+                lineUid: currentLineUid,
+                studentId: document.getElementById('verify-student-id').value.trim(),
+                nationalId: document.getElementById('verify-national-id').value.trim()
+            };
+
+            fetch(API_URL, {
+                method: 'POST',
+                body: JSON.stringify(payload)
+            }).then(res => res.json()).then(result => {
+                if(result.status === 'success') {
+                    document.getElementById('register-section').classList.add('hidden');
+                    currentStudentId = result.studentId;
+                    showDashboard(result.studentId, result.fullName, "");
+                } else {
+                    throw new Error(result.message);
+                }
+            }).catch(err => {
+                errorMsg.innerText = err.message;
+                errorMsg.classList.remove('hidden');
+                btn.disabled = false;
+                btn.innerText = 'ยืนยันเพื่อเข้าสู่ระบบ';
+            });
+        }
+
+        // แสดงหน้า Dashboard หลังจากล็อกอิน/ยืนยันตัวตนผ่าน
+        function showDashboard(id, name, engName = "") {
             document.getElementById('welcome-section').classList.add('hidden');
             document.getElementById('dashboard-section').classList.remove('hidden');
             
@@ -297,7 +352,7 @@
             document.getElementById('thaiName').value = name;
             document.getElementById('user-display').innerText = `ผู้ใช้งาน: ${name}`;
             
-            // เติมชื่อภาษาอังกฤษให้อัตโนมัติ (ถ้าเคยมีข้อมูล)
+            // เติมชื่อภาษาอังกฤษอัตโนมัติถ้าเคยกรอกแล้ว
             if (engName) {
                 document.getElementById('engName').value = engName;
             }
@@ -330,7 +385,7 @@
             }
         }
 
-        // โหลดประวัติการรายงานผล
+        // โหลดประวัติการรายงานผล (เปลี่ยนเป็นค้นหาด้วย studentId แทน email)
         function fetchHistory() {
             const listContainer = document.getElementById('history-list');
             const emptyState = document.getElementById('history-empty');
@@ -340,7 +395,7 @@
             emptyState.classList.add('hidden');
             loadingState.classList.remove('hidden');
 
-            fetch(`${API_URL}?action=getStudentHistory&email=${studentEmail}`)
+            fetch(`${API_URL}?action=getStudentHistory&studentId=${currentStudentId}`)
                 .then(res => res.json())
                 .then(result => {
                     loadingState.classList.add('hidden');
@@ -377,28 +432,25 @@
                     statusBadge = `<span class="px-3 py-1 bg-green-100 text-green-700 text-xs font-bold rounded-full border border-green-200 shadow-sm">${item.status}</span>`;
                 }
 
-                // ส่วนที่ต้องแก้ไขในฟังก์ชัน renderHistoryCards(data)
-const card = `
-    <div class="bg-white p-5 md:p-6 rounded-2xl border border-gray-200 shadow-sm hover:shadow-md transition-shadow relative">
-        <!-- ย้ายป้ายสถานะมาไว้ด้านบนสุด -->
-        <div class="mb-2">
-            ${statusBadge}
-        </div>
-        <!-- ชื่อมหาวิทยาลัยจะอยู่บรรทัดต่อมาและมีพื้นที่เต็ม -->
-        <h4 class="font-bold text-lg text-primary leading-tight mb-3">${item.university}</h4>
-        
-        <div class="space-y-1.5 mb-4">
-            <p class="text-sm text-gray-700"><span class="font-semibold text-gray-500 w-16 inline-block">ระบบ:</span> <span class="bg-gray-100 px-2 py-0.5 rounded text-xs">${item.systemType}</span></p>
-            <p class="text-sm text-gray-700"><span class="font-semibold text-gray-500 w-16 inline-block"></span> ${item.faculty}</p>
-            <p class="text-sm text-gray-700"><span class="font-semibold text-gray-500 w-16 inline-block"></span> ${item.major}</p>
-            <p class="text-sm text-gray-700"><span class="font-semibold text-gray-500 w-16 inline-block"></span> <span class="bg-purple-50 text-purple-700 px-2 py-0.5 rounded text-xs font-medium border border-purple-100">${item.round}</span></p>
-        </div>
-        <div class="text-xs text-gray-400 flex items-center gap-1 border-t border-gray-100 pt-3 mt-2">
-            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
-            รายงานเมื่อ: ${item.date}
-        </div>
-    </div>
-`;
+                const card = `
+                    <div class="bg-white p-5 md:p-6 rounded-2xl border border-gray-200 shadow-sm hover:shadow-md transition-shadow relative">
+                        <div class="flex justify-end mb-2">
+                            ${statusBadge}
+                        </div>
+                        <h4 class="font-bold text-lg text-primary leading-tight mb-3">${item.university}</h4>
+                        
+                        <div class="space-y-1.5 mb-4">
+                            <p class="text-sm text-gray-700"><span class="font-semibold text-gray-500 w-16 inline-block">ระบบ:</span> <span class="bg-gray-100 px-2 py-0.5 rounded text-xs">${item.systemType}</span></p>
+                            <p class="text-sm text-gray-700"><span class="font-semibold text-gray-500 w-16 inline-block">คณะ:</span> ${item.faculty}</p>
+                            <p class="text-sm text-gray-700"><span class="font-semibold text-gray-500 w-16 inline-block">สาขา:</span> ${item.major}</p>
+                            <p class="text-sm text-gray-700"><span class="font-semibold text-gray-500 w-16 inline-block">รอบ:</span> <span class="bg-purple-50 text-purple-700 px-2 py-0.5 rounded text-xs font-medium border border-purple-100">${item.round}</span></p>
+                        </div>
+                        <div class="text-xs text-gray-400 flex items-center gap-1 border-t border-gray-100 pt-3 mt-2">
+                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+                            รายงานเมื่อ: ${item.date}
+                        </div>
+                    </div>
+                `;
                 container.innerHTML += card;
             });
         }
@@ -517,6 +569,7 @@ const card = `
             }
         }
 
+        // กดส่งฟอร์ม (แก้ไข payload ให้ส่ง lineUid แทน email)
         function handleFormSubmit(e) {
             e.preventDefault();
             const btn = document.getElementById('submitBtn');
@@ -538,8 +591,8 @@ const card = `
 
                 const payload = {
                     action: 'submitForm',
-                    studentId: document.getElementById('studentId').value,
-                    email: studentEmail,
+                    studentId: currentStudentId,
+                    lineUid: currentLineUid,
                     thaiName: document.getElementById('thaiName').value,
                     engName: document.getElementById('engName').value,
                     systemType: isTcas ? "TCAS" : "รับตรง/นอกระบบ",
